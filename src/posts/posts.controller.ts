@@ -1,7 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
-interface Post {
+interface PostModel {
+  id: number;
   author: string;
   title: string;
   content: string;
@@ -9,18 +10,20 @@ interface Post {
   commentCount: number;
 }
 
+let posts: PostModel[];
+
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  getPost(): Post {
-    return {
-      author: 'newjeans_official',
-      title: 'newjeans minji',
-      content: 'dancing minji',
-      likeCount: 100000000,
-      commentCount: 9999999,
-    };
+  getPosts() {
+    return posts;
+  }
+
+  // ':': pathParameter
+  @Get(':id')
+  getPost(@Param('id') id: string) {
+    return posts.find((post) => post.id === +id);
   }
 }
