@@ -5,10 +5,15 @@ export class UsersModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    length: 20,
+    unique: true,
+  })
   nickname: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
