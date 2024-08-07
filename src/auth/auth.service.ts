@@ -7,7 +7,7 @@ import { JWT_SECRET } from './const/auth.const';
 export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
-  singToken(user: Pick<UsersModel, 'email' | 'id'>, isRefreshToken: boolean) {
+  signToken(user: Pick<UsersModel, 'email' | 'id'>, isRefreshToken: boolean) {
     const payload = {
       email: user.email,
       sub: user.id,
@@ -19,5 +19,12 @@ export class AuthService {
       // seconds
       expiresIn: isRefreshToken ? 3600 : 300,
     });
+  }
+
+  loginUser(user: Pick<UsersModel, 'email' | 'id'>) {
+    return {
+      accessToken: this.signToken(user, false),
+      refreshToken: this.signToken(user, true),
+    };
   }
 }
