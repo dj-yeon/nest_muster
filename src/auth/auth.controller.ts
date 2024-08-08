@@ -1,6 +1,7 @@
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MaxLengthPipe, MinLengthPipe } from './pipe/password.pipe';
+import { BasicTokenGuard } from './guard/basic-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,8 +30,9 @@ export class AuthController {
   }
 
   @Post('login/email')
+  @UseGuards(BasicTokenGuard)
   postLoginEmail(@Headers('authorization') rawToken: string) {
-    //email:password -> base64
+    // email:password -> base64
     // 풀어서 -> email:password로 만들어야함
     // 클라이언트에서 서버로 보낼 때, id,pwd 형태가 아닌,
     // 'Basic {email:password를 base64로 인코딩한 형태}'로 보냄
