@@ -39,6 +39,7 @@ export class AuthService {
    *    새로운 토큰을 발급받고 새로운 토큰을 사용해서 private route에 접근한다.
    */
 
+  // 토큰을 발급
   signToken(user: Pick<UsersModel, 'email' | 'id'>, isRefreshToken: boolean) {
     const payload = {
       email: user.email,
