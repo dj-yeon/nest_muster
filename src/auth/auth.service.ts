@@ -102,6 +102,8 @@ export class AuthService {
   extractTokenFromHeader(header: string, isBearer: boolean) {
     const splitToken = header.split(' ');
 
+    // Bearer - 'refresh Token' or 'access Token'
+    // Basic - 로그인 용
     const prefix = isBearer ? 'Bearer' : 'Basic';
 
     if (splitToken.length !== 2 || splitToken[0] !== prefix) {
@@ -145,7 +147,7 @@ export class AuthService {
     });
   }
 
-  //
+  // 토큰 재발급
   rotateToken(token: string, isRefreshToken: boolean) {
     const decoded = this.jwtService.verify(token, {
       secret: JWT_SECRET,
