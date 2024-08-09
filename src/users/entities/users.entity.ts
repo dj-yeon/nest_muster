@@ -5,7 +5,7 @@ import { BaseModel } from 'src/common/entity/base.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { lengthValidationMessage } from 'src/common/validation-message/length-validation.message';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation.message';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -39,7 +39,7 @@ export class UsersModel extends BaseModel {
    * toClassOnly -> class instance로 변환될때만
    * toPlainOnly -> plain object로 변환될때만
    *
-   * 응답이나갈때만 exclude
+   * 응답이 나갈때만 exclude
    *
    */
   @Exclude({ toPlainOnly: true })
@@ -50,6 +50,11 @@ export class UsersModel extends BaseModel {
     default: RolesEnum.USER,
   })
   role: RolesEnum;
+
+  // @Expose()
+  // get nicknameAndEmail() {
+  //   return this.nickname + '/' + this.email;
+  // }
 
   @OneToMany(() => PostsModel, (post) => post.author)
   posts: PostsModel[];
