@@ -46,7 +46,7 @@ export class AuthController {
     return this.authService.loginWithEmail(credentials);
   }
 
-  @Post('regiter/email')
+  @Post('register/email')
   postRegisterEmail(
     @Body('nickname') nickname: string,
     @Body('email') email: string,
