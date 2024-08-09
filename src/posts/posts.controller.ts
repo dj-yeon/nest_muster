@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   UseGuards,
@@ -38,9 +39,12 @@ export class PostsController {
     return this.postsService.createPost(user.id, body);
   }
 
-  // PUT METHOD
-  @Put(':id')
-  putPost(@Param('id', ParseIntPipe) id: number, @Body() body: UpdatePostDto) {
+  // PATCH METHOD
+  @Patch(':id')
+  patchPost(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdatePostDto,
+  ) {
     return this.postsService.updatePost(id, body);
   }
 
