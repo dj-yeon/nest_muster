@@ -1,3 +1,4 @@
+import { IsString } from 'class-validator';
 import { BaseModel } from 'src/common/entity/base.entity';
 import { UsersModel } from 'src/users/entities/users.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
@@ -9,10 +10,10 @@ export class PostsModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.posts, { nullable: false })
   author: UsersModel;
 
-  @Column()
+  @IsString({ message: 'title must be string.' })
   title: string;
 
-  @Column()
+  @IsString({ message: 'content must be string.' })
   content: string;
 
   @Column()
