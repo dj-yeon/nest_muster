@@ -5,6 +5,7 @@ import { BaseModel } from 'src/common/entity/base.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { lengthValidationMessage } from 'src/common/validation-message/length-validation.message';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation.message';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -26,6 +27,7 @@ export class UsersModel extends BaseModel {
   @Column()
   @IsString()
   @Length(3, 8, { message: lengthValidationMessage })
+  @Exclude()
   password: string;
 
   @Column({
