@@ -4,6 +4,8 @@ import { PostsModel } from './entities/posts.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { CommonService } from 'src/common/common.service';
+import { PaginatePostDto } from './dto/paginte-post.dto';
 
 export interface PostModel {
   id: number;
@@ -19,6 +21,7 @@ export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    private readonly commonService: CommonService,
   ) {}
 
   async getAllPosts() {
@@ -94,5 +97,17 @@ export class PostsService {
     await this.postsRepository.delete(postId);
 
     return postId;
+  }
+
+  // 1) 오름차 순으로 정렬하는 pagination만 구현한다
+  async paginatePosts(dto: PaginatePostDto) {
+    return this.commonService.paginate(
+      dto,
+      this.postsRepository,
+      {
+        //...DEFAULT_POST_FIND_OPTIONS,
+      },
+      'posts',
+    );
   }
 }
