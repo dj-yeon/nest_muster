@@ -13,34 +13,30 @@ import { PaginatePostDto } from './dto/paginte-post.dto';
 import { basename, join } from 'path';
 import { POST_IMAGE_PATH, TEMP_FOLDER_PATH } from 'src/common/const/path.const';
 import { promises } from 'fs';
-
-export interface PostModel {
-  id: number;
-  author: string;
-  title: string;
-  content: string;
-  likeCount: number;
-  commentCount: number;
-}
+import { CreatePostImageDto } from './image/dto/create-image.dto';
+import { ImageModel } from 'src/common/entity/image.entity';
+import { DEFAULT_POST_FIND_OPTIONS } from './const/default-post-find-options.const';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    @InjectRepository(ImageModel)
+    private readonly imageRepository: Repository<ImageModel>,
     private readonly commonService: CommonService,
   ) {}
 
   async getAllPosts() {
     this.postsRepository.find({
-      relations: ['author'],
+      ...DEFAULT_POST_FIND_OPTIONS,
     });
   }
 
   async getPostById(id: number) {
     const post = await this.postsRepository.findOne({
+      ...DEFAULT_POST_FIND_OPTIONS,
       where: { id },
-      relations: ['author'],
     });
 
     if (!post) {
@@ -59,6 +55,7 @@ export class PostsService {
         id: authorId,
       },
       ...postDto,
+      images: [],
       likeCount: 0,
       commentCount: 0,
     });
@@ -75,7 +72,9 @@ export class PostsService {
     // 1) 만약 데이터 존재, (id 기준으로) 새로 생성한다.
     // 2) 만약 데이터 존재X, (같은 id 값이 존재한다면) 존재하는 값을 업데이트한다.
 
-    const post = await this.postsRepository.findOne({ where: { id: postId } });
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+    });
 
     if (!post) {
       throw new NotFoundException();
@@ -112,15 +111,15 @@ export class PostsService {
       dto,
       this.postsRepository,
       {
-        //...DEFAULT_POST_FIND_OPTIONS,
+        ...DEFAULT_POST_FIND_OPTIONS,
       },
       'posts',
     );
   }
 
-  async createPostImage(dto: CreatePostDto) {
+  async createPostImage(dto: CreatePostImageDto) {
     // dto의 이미지 이름 기반, 파일 경로 생성
-    const tempFilePath = join(TEMP_FOLDER_PATH, dto.image);
+    const tempFilePath = join(TEMP_FOLDER_PATH, dto.path);
 
     try {
       // 파일 존재 확인
@@ -135,8 +134,14 @@ export class PostsService {
     // 새로 이동할 포스트 폴더의 이동 경로 + 이미지 이름
     const newPath = join(POST_IMAGE_PATH, fileName);
 
+    // save
+    const result = await this.imageRepository.save({
+      ...dto,
+    });
+
+    // 파일 옮기기
     await promises.rename(tempFilePath, newPath);
 
-    return true;
+    return result;
   }
 }
