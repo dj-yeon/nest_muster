@@ -11,11 +11,18 @@ export class PostsModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.posts, { nullable: false })
   author: UsersModel;
 
+  @Column()
   @IsString({ message: stringValidationMessage })
   title: string;
 
+  @Column()
   @IsString({ message: stringValidationMessage })
   content: string;
+
+  @Column({
+    nullable: true,
+  })
+  image?: string;
 
   @Column()
   likeCount: number;
