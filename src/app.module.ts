@@ -54,6 +54,7 @@ import { CommentsModule } from './posts/comments/comments.module';
     AuthModule,
     CommonModule,
     CommentsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
