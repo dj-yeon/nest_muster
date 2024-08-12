@@ -47,7 +47,9 @@ export class PostsController {
   @UseInterceptors(LogInterceptor)
   // @UseFilters(HttpExceptionFilter)
   getPost(@Param('id', ParseIntPipe) id: number) {
-    // throw new BadRequestException('test error');
+    //    throw new BadRequestException('test error');
+
+    return this.postsService.getPostById(id);
   }
 
   // POST METHOD
