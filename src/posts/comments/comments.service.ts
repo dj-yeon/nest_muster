@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonService } from 'src/common/common.service';
 import { CommentsModel } from './entity/comments.entity';
@@ -25,5 +25,19 @@ export class CommentsService {
       },
       `posts/${postId}/comments`,
     );
+  }
+
+  async getCommentById(id: number) {
+    const comment = await this.commentsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!comment) {
+      throw new BadRequestException(`id: ${id} Comment는 존재하지 않습니다.`);
+    }
+
+    return comment;
   }
 }
