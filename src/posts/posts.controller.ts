@@ -27,6 +27,9 @@ import { LogInterceptor } from 'src/common/interceptor/log.interceptor';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
 import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
 import { HttpExceptionFilter } from 'src/common/exception-filter/http.exception-filter';
+import { Roles } from 'src/users/decorator/roles.decorator';
+import { RolesEnum } from 'src/users/const/roles.const';
+import { IsPublic } from 'src/common/decorator/is-public.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -37,6 +40,7 @@ export class PostsController {
   ) {}
 
   @Get()
+  @IsPublic()
   @UseInterceptors(LogInterceptor)
   getPosts(@Query() query: PaginatePostDto) {
     return this.postsService.paginatePosts(query);
@@ -44,6 +48,7 @@ export class PostsController {
 
   // ':': pathParameter
   @Get(':id')
+  @IsPublic()
   @UseInterceptors(LogInterceptor)
   // @UseFilters(HttpExceptionFilter)
   getPost(@Param('id', ParseIntPipe) id: number) {
@@ -54,7 +59,6 @@ export class PostsController {
 
   // POST METHOD
   @Post()
-  @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
   async postPosts(
     @User() user: UsersModel,
@@ -105,7 +109,10 @@ export class PostsController {
 
   //DELETE METHOD
   @Delete(':id')
+  @Roles(RolesEnum.ADMIN)
   deletePost(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.deletePost(id);
   }
+
+  // RBAC -> Role Based Access Control
 }
